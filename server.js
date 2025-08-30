@@ -29,7 +29,7 @@ fastify.addHook('onSend', async (request, reply) => {
 // Többi script fájlom betöltése a routes-on keresztül
 fastify.register(require('./routes'));
 fastify.register(require('@fastify/cors'), {
-  origin: ["https://www.szeretetben.hu"], // Engedélyezett domain
+  origin: ["https://www.szeretetben.hu", "https://app-withered-morning-8577.fly.dev"], // Engedélyezett domainek
   methods: ["GET", "POST", "OPTIONS"], // Engedélyezett HTTP metódusok
   allowedHeaders: ["Content-Type"], // Engedélyezett fejlécek
 });
@@ -44,7 +44,8 @@ fastify.register(require('@fastify/cors'), {
 // Szerver indítása
 const start = async () => {
   try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
+    //await fastify.listen({ port: 3000, host: '0.0.0.0' }); // régi
+    await fastify.listen({ port: process.env.PORT || 3000, host: '0.0.0.0' });
     console.log('✅ Szerver fut a 3000-es porton.');
   } catch (err) {
     fastify.log.error(err);
@@ -52,6 +53,9 @@ const start = async () => {
   }
 };
 start();
+
+// fly.io healthcheck endpoint
+fastify.get('/healthz', async () => ({ ok: true }));
 
 
 // Szerver ébren tartása
