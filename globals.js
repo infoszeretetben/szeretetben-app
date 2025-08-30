@@ -50,18 +50,26 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 */
-// Firebase inicializálása admin módban
+// Firebase inicializálása admin módban (robosztus betöltéssel)
 let serviceAccount = null;
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+const rawSA = process.env.FIREBASE_SERVICE_ACCOUNT;
+if (rawSA) {
   try {
-    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  } catch (err) {
-    console.error("❌ Nem sikerült a FIREBASE_SERVICE_ACCOUNT JSON.parse:", err);
+    // 1. próba: sima JSON.parse
+    serviceAccount = JSON.parse(rawSA);
+  } catch (e1) {
+    try {
+      // 2. próba: távolítsuk el a fölösleges backslash-öket és a \n-eket alakítsuk vissza
+      const fixed = rawSA.replace(/\\"/g, '"').replace(/\\n/g, '\n');
+      serviceAccount = JSON.parse(fixed);
+    } catch (e2) {
+      console.error('❌ FIREBASE_SERVICE_ACCOUNT parse hiba:', e2);
+    }
   }
 }
 if (!serviceAccount) {
-  // Ha nincs teljes JSON, akkor kulcsokból rakjuk össze
-  const privateKey = (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, '\n');
+  // Fallback: külön env változókból (ez a legstabilabb)
+  const privateKey = (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
   serviceAccount = {
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
