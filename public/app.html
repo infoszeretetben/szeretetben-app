@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="icon" href="https://cdn.glitch.global/b5e3bad2-9963-4365-994a-f5d1757d9f4b/public/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szeretetben App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="/app.css"> <!-- Oldal teljes CSS -->
+    <link rel="stylesheet" href="/calendar.css"> <!-- Saját naptár CSS -->
+  </head>
+  <body>
+    <header>
+      <div class="header slide-in-right">
+          <h2 onclick="reloadPage()" style="cursor: pointer;">Szeretetben App</h2>
+          <div class="profile-picture" id="profile-picture">
+              <img src="" alt="Profilkép" id="profile-img">
+          </div>
+          <p id="user-status"><b>Betöltés...</b></p>
+          <div class="button-group">
+              <button class="button-51" onclick="showSection('profile-edit-section')">Profilom</button>
+              <button class="button-51" onclick="logoutUser(0)">Kijelentkezés</button>
+          </div>
+      </div>
+    </header>
+	
+    <main>
+      <div class="main-container" id="main-container">
+          <div class="content">
+              <div id="betoltes" class="content-section visible">
+                  <img src="https://www.szeretetben.hu/wp-content/uploads/2025/01/update.png" alt="Adatok betöltése..." class="loadImage">
+              </div>
+              <div id="home-section" class="content-section"></div>
+              <div id="meditaciok-section" class="content-section"></div>
+              <div id="workshopok-section" class="content-section">
+                  <h3>Workshopok</h3>
+                  <p>Ez a Workshopok szekció tartalma.</p>
+              </div>
+              <div id="users-section" class="content-section"></div>
+              <div id="med-event-section" class="content-section"></div>
+              <div id="uzenetek-section" class="content-section">
+                  <h3>Üzenetek</h3>
+                  <p>Ez az üzenetek szekció tartalma.</p>
+              </div>
+              <div id="proba-section" class="content-section"></div>
+              <div id="profile-edit-section" class="content-section"></div>
+              <div id="naptar-section" class="content-section">
+                  <h3>Szabad időpontok</h3>
+                  <div id="calendar-container" style="display: none;">
+                    <div id="calendar"></div>
+                  </div>
+                  <p>.</p>
+              </div>
+          </div>
+      </div>
+      <div id="jelenleti-iv-root"></div>
+    </main>
+    <nav class="bottom-menu">
+      <a role="button" data-section="home-section">🏠 <span>Főoldal</span></a>
+      <a role="button" data-section="meditaciok-section">🧘 <span>Meditációk</span></a>
+      <a role="button" data-section="workshopok-section">🎓 <span>Workshopok</span></a>
+      <a role="button" class="assistbutton hidden" data-section="users-section">👥 <span>Felhasználók</span></a>
+      <a role="button" class="assistbutton hidden" data-section="med-event-section">📅 <span>Szervezés</span></a>
+      <a role="button" data-section="uzenetek-section">💬 <span>Üzenetek</span></a>
+      <a role="button" class="adminbutton hidden" data-section="proba-section">⚙️ <span>Próba</span></a>
+    </nav>
+    <script type="module" src="/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script> <!-- FullCalendar JS -->
+  </body>
+</html>

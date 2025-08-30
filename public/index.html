@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://cdn.glitch.global/b5e3bad2-9963-4365-994a-f5d1757d9f4b/public/favicon.ico" type="image/x-icon">
+    <title>Szeretetben App – Bejelentkezés és Regisztráció</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/index-css.css">
+    <!-- Firebase SDK-k betöltése -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+      <!-- Kezdő Lap -->
+      <div id="start-page" class="container view">
+        <div>
+            <h2><img src="https://cdn.glitch.global/b5e3bad2-9963-4365-994a-f5d1757d9f4b/public%2Fszeretetben-app.png?v=1737928953981" alt="Szeretetben App" class="icon"><br>Szeretetben App</h2>
+            <button class="btn" id="google-login-btn">Google Belépés</button>
+            <button class="btn" id="email-login-btn">Email Belépés</button>
+            <p id="also-szoveg">Még nem regisztráltál? <a href="#" id="register-link">Regisztráció itt</a></p>
+        </div>
+        <label for="user-count"></label>
+      </div>
+
+      <!-- Email Belépés -->
+      <div id="email-login" class="container view hidden">
+        <div>
+            <h2>Email Belépés</h2>
+            <div class="input-group">
+                <label for="login-email">Email cím</label>
+                <input type="email" id="login-email" placeholder="Adja meg az email címét">
+            </div>
+            <div class="input-group">
+                <label for="login-password">Jelszó</label>
+                <input type="password" id="login-password" placeholder="Adja meg a jelszavát">
+            </div>
+            <button class="btn" id="email-login-submit">Belépés</button>
+            <p><a href="#" id="forgot-password-link">Elfelejtett jelszó</a></p>
+            <p><a href="#" id="back-to-start">Vissza</a></p>
+        </div>
+      </div>
+
+      <!-- Regisztráció -->
+      <div id="register-page" class="container view hidden">
+        <div>
+            <h2>Regisztráció</h2>
+            <button class="btn" id="google-register-btn">Google Regisztráció</button>
+            <button class="btn" id="email-register-btn">Email Regisztráció</button>
+            <p><a href="#" id="back-to-start-2">Vissza</a></p>
+        </div>
+      </div>
+
+      <!-- Email Regisztráció -->
+      <div id="email-register" class="container view hidden">
+        <div>
+            <h2>Email Regisztráció</h2>
+            <div class="input-group">
+                <label for="register-email">Email cím</label>
+                <input type="email" id="register-email" placeholder="Adja meg az email címét">
+            </div>
+            <div class="input-group">
+                <label for="register-password">Jelszó</label>
+                <input type="password" id="register-password" placeholder="Adja meg a jelszavát">
+            </div>
+            <button class="btn" id="email-register-submit">Regisztráció</button>
+            <p><a href="#" id="back-to-register">Vissza</a></p>
+        </div>
+      </div>
+
+      <!-- Elfelejtett Jelszó -->
+      <div id="forgot-password" class="container view hidden">
+        <div>
+            <h2>Elfelejtett Jelszó</h2>
+            <div class="input-group">
+                <label for="forgot-email">Email cím</label>
+                <input type="email" id="forgot-email" placeholder="Adja meg az email címét">
+            </div>
+            <button class="btn" id="forgot-password-submit">Elfelejtett jelszó</button>
+            <p><a href="#" id="back-to-email-login">Vissza</a></p>
+        </div>
+      </div>
+  
+      <!-- Bejelentkezett -->
+      <div id="logged-in-page" class="container view hidden">
+        <div>
+            <h2>
+                <img src="https://cdn.glitch.global/b5e3bad2-9963-4365-994a-f5d1757d9f4b/public%2Fszeretetben-app.png?v=1737928953981" alt="Szeretetben App" class="icon">
+                <br>Szeretetben App
+            </h2>
+            <label id="welcome-message" style="font-size: 1rem;">Sikeresen beléptél<br><span id="user-name"></span></label>
+        </div>
+      </div>
+
+    <script src="/index.js"></script>
+</body>
+</html>

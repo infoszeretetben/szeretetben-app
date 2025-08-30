@@ -1,0 +1,30 @@
+#calendar-container {
+  width: 100%;
+}
+#calendar {
+  max-width: 900px;
+  margin: 40px auto;
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.fc .fc-daygrid-day-frame {
+  min-height: 150px; /* vagy 200px ha több kell */
+}
+
+.fc .fc-daygrid-day-events {
+  margin-top: 4px;
+}
+.fc .fc-daygrid-day-number {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  right: auto;
+  text-align: left;
+  font-weight: 600;
+}
+.fc-hide-row {
+  display: none !important;
+}
+
