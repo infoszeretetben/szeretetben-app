@@ -20,7 +20,10 @@ const proxy = {
     password: process.env.PROXY_PASS,
   },
 };
-const proxyAgent = new httpsProxyAgent(`http://${proxy.auth.username}:${proxy.auth.password}@${proxy.host}:${proxy.port}`);
+//const proxyAgent = new httpsProxyAgent(`http://${proxy.auth.username}:${proxy.auth.password}@${proxy.host}:${proxy.port}`);
+const proxyAgent = (proxy.host && proxy.port)
+  ? new httpsProxyAgent(`http://${proxy.auth.username}:${proxy.auth.password}@${proxy.host}:${proxy.port}`)
+  : undefined;
 // Statikus fájlok kiszolgálásához
 fastify.register(fastifyStatic, {
   root: path.join(__dirname, 'public'),
@@ -40,10 +43,34 @@ const firebaseConfig = {
   appId: process.env.FIREBASE_APP_ID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
+/*
 // Firebase inicializálása admin módban
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
+});
+*/
+// Firebase inicializálása admin módban
+let serviceAccount = null;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  try {
+    serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  } catch (err) {
+    console.error("❌ Nem sikerült a FIREBASE_SERVICE_ACCOUNT JSON.parse:", err);
+  }
+}
+if (!serviceAccount) {
+  // Ha nincs teljes JSON, akkor kulcsokból rakjuk össze
+  const privateKey = (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, '\n');
+  serviceAccount = {
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey
+  };
+}
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  ...(process.env.FIREBASE_DB_URL ? { databaseURL: process.env.FIREBASE_DB_URL } : {})
 });
 //Twilio konfig key-ek
 const seemeConfig = {
