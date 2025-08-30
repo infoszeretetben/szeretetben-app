@@ -50,34 +50,14 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 */
-// Firebase inicializálása admin módban (robosztus betöltéssel)
-let serviceAccount = null;
-const rawSA = process.env.FIREBASE_SERVICE_ACCOUNT;
-if (rawSA) {
-  try {
-    // 1. próba: sima JSON.parse
-    serviceAccount = JSON.parse(rawSA);
-  } catch (e1) {
-    try {
-      // 2. próba: távolítsuk el a fölösleges backslash-öket és a \n-eket alakítsuk vissza
-      const fixed = rawSA.replace(/\\"/g, '"').replace(/\\n/g, '\n');
-      serviceAccount = JSON.parse(fixed);
-    } catch (e2) {
-      console.error('❌ FIREBASE_SERVICE_ACCOUNT parse hiba:', e2);
-    }
-  }
-}
-if (!serviceAccount) {
-  // Fallback: külön env változókból (ez a legstabilabb)
-  const privateKey = (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
-  serviceAccount = {
+// Firebase inicializálása admin módban – csak külön env kulcsokból
+const privateKey = (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+admin.initializeApp({
+  credential: admin.credential.cert({
     projectId: process.env.FIREBASE_PROJECT_ID,
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     privateKey
-  };
-}
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  }),
   ...(process.env.FIREBASE_DB_URL ? { databaseURL: process.env.FIREBASE_DB_URL } : {})
 });
 //Twilio konfig key-ek
