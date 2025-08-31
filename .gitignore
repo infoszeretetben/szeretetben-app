@@ -1,0 +1,14 @@
+# környezeti és érzékeny dolgok
+.env
+env
+serviceAccount.json
+.bash_history
+.DS_Store
+.config/
+
+# glitch maradék
+.glitchdotcom.json
+.node-gyp
+
+# node csomagok
+node_modules
