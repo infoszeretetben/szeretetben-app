@@ -1,0 +1,20 @@
+name: Fly Deploy
+
+on:
+  push:
+    branches: [ "main" ]   # main-re mentéskor automatikus deploy élesre
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@v1
+
+      - name: Deploy to PROD (remote build)
+        run: flyctl deploy --remote-only -a app-withered-morning-8577
