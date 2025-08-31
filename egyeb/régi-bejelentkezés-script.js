@@ -9,13 +9,13 @@
     <script>
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
         const firebaseConfig = {
-          apiKey: "AIzaSyBqsRBiFQEw_QbI8e8cbkeM63EJkosuaq4",
+          apiKey: "",
           authDomain: "szeretetbenapp.firebaseapp.com",
           projectId: "szeretetbenapp",
           storageBucket: "szeretetbenapp.firebasestorage.app",
-          messagingSenderId: "461393102877",
-          appId: "1:461393102877:web:bf90328417e2433fff1ef4",
-          measurementId: "G-PP2RL1FJVR"
+          messagingSenderId: "",
+          appId: ":",
+          measurementId: ""
         };
         // Firebase inicializálása
         const app = firebase.initializeApp(firebaseConfig);
