@@ -53,11 +53,19 @@ admin.initializeApp({
 // Firebase inicializálása admin módban (globals/server.js környéke)
 const crypto = require('crypto');
 function loadFirebaseServiceAccount() {
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
-  if (!raw) {
-    throw new Error('FIREBASE_SERVICE_ACCOUNT nincs beállítva!');
+  const rawJson = process.env.FIREBASE_SERVICE_ACCOUNT;
+  const rawB64  = process.env.FIREBASE_SERVICE_ACCOUNT_B64;
+  if (!rawJson && !rawB64) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT(_B64) nincs beállítva!');
   }
+  const raw = rawB64
+    ? Buffer.from(rawB64, 'base64').toString('utf8')
+    : rawJson;
+  
+  console.log('[firebase] using', rawB64 ? 'B64' : 'JSON');
+
   let sa;
+  //sa.private_key = sa.private_key.replace(/\\n/g, '\n');
   try {
     sa = JSON.parse(raw);
   } catch (e) {

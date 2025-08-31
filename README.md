@@ -96,6 +96,6 @@ Gyors biztonsági mentés: csak simán lementeni a tömörített fájl listát. 
 A lementett fájlokat és fájlstrukúrát manuálisan kell létrehozni és bemásolni Glitch-be. A Glitch megengedi teljes könyvtárak behúzását a strukturába. Létre kell hozni a ponttal kezdődő titkos fájlokat is (.env, .gitignore, .nvmrc). Be kell másolni az Assets-be a fájlokat (új hivatkozás URL-ek jönnek létre, melyeket a kódban frissíteni kell a helyes működéshez). Létre kell hozni a helyesen beállított Firebase-t és Firestore-t. Létre kell hozni a Firestore alap-adatbázis struktúrát.
 Ha minden fájl és hivatkozás helyes és a .env is és az adatbázis is, akkor a Glitch automaikusan elindítja a szervert és az webapp máris elérhető és fut az új ....glitch.com címen.
 
-# Glitch határai
+# Glitch határai – kezdetben a Glitch-en fejlesztettünk, ez már nem aktuális
 
 Kb. havi 1000 felhasználóig képes kiszolgálni az igényeket a Glitch. Ezen felül érdemes migrálni a programot pl. Google Cloud-ba, fizetős és jobban skálázható, valamint biztonságosabb környezetbe.
