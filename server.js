@@ -57,6 +57,8 @@ start();
 // fly.io healthcheck endpoint
 fastify.get('/healthz', async () => ({ ok: true }));
 
+// GitHub auto deploy check
+console.log('Deploy via GitHub Actions ✅', new Date().toISOString());
 
 // Szerver ébren tartása
 fastify.get('/api/wakeup', async (request, reply) => {
