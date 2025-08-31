@@ -50,16 +50,41 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 */
-// Firebase inicializálása admin módban – csak külön env kulcsokból
-const privateKey = (process.env.FIREBASE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
-admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: process.env.FIREBASE_PROJECT_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-    privateKey
-  }),
-  ...(process.env.FIREBASE_DB_URL ? { databaseURL: process.env.FIREBASE_DB_URL } : {})
-});
+// Firebase inicializálása admin módban (globals/server.js környéke)
+import admin from 'firebase-admin';
+import crypto from 'crypto';
+function loadFirebaseServiceAccount() {
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
+  if (!raw) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT nincs beállítva!');
+  }
+  let sa;
+  try {
+    sa = JSON.parse(raw);
+  } catch (e) {
+    throw new Error('FIREBASE_SERVICE_ACCOUNT nem érvényes JSON. ' + e.message);
+  }
+  // Sorvégek helyrehozása (ha a .env-ben \\n van)
+  if (typeof sa.private_key === 'string') {
+    sa.private_key = sa.private_key.replace(/\\n/g, '\n');
+  } else {
+    throw new Error('serviceAccount.private_key hiányzik vagy nem string.');
+  }
+  // Gyors formai ellenőrzés
+  if (!sa.client_email || !sa.project_id || !sa.private_key.includes('BEGIN PRIVATE KEY')) {
+    throw new Error('serviceAccount kötelező mezők hiányoznak vagy hibásak.');
+  }
+  // IDEIGLENES: kockázatmentes „ujjlenyomat” log (nem a kulcsot logoljuk!)
+  const pkFingerprint = crypto.createHash('sha256').update(sa.private_key).digest('hex').slice(0, 12);
+  console.log(`[firebase] service account OK | project=${sa.project_id} | email=${sa.client_email} | pk#=${pkFingerprint}`);
+  return sa;
+}
+const serviceAccount = loadFirebaseServiceAccount();
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 //Twilio konfig key-ek
 const seemeConfig = {
   url: process.env.SEEME_GATEWAY_URL,
