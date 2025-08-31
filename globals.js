@@ -51,8 +51,8 @@ admin.initializeApp({
 });
 */
 // Firebase inicializálása admin módban (globals/server.js környéke)
-import admin from 'firebase-admin';
-import crypto from 'crypto';
+const admin = require('firebase-admin');
+const crypto = require('crypto');
 function loadFirebaseServiceAccount() {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT;
   if (!raw) {
