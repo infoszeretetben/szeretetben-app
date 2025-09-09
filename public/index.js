@@ -10,8 +10,6 @@ const forgotPassword = document.getElementById('forgot-password');
 const loggedInPage = document.getElementById('logged-in-page');
 const views = [startPage, emailLogin, registerPage, emailRegister, forgotPassword, loggedInPage];
   // Gombok és linkek lekérése
-const googleLoginBtn = document.getElementById('google-login-btn');  
-const googleRegisterBtn = document.getElementById('google-register-btn');
 const emailLoginBtn = document.getElementById('email-login-btn');
 const emailLoginSubmit = document.getElementById('email-login-submit');
 const registerLink = document.getElementById('register-link');
@@ -56,17 +54,7 @@ if (!firebase || typeof firebase.initializeApp !== 'function') {
     } catch (error) {
       console.error('proba – Proxy hívás hiba', error);
     }
-    
 
-    // Google belépés gomb
-    googleLoginBtn.addEventListener('click', () => {
-        google.accounts.id.prompt(); // Megjeleníti a Google bejelentkezési ablakot
-    });
-    
-    // Google regisztrálás gomb
-    googleRegisterBtn.addEventListener('click', () => {
-        google.accounts.id.prompt(); // Megjeleníti a Google bejelentkezési ablakot
-    });
 
     // Váltás az email-es belépés lapra gomb
     emailLoginBtn.addEventListener('click', () => {
@@ -127,7 +115,7 @@ if (!firebase || typeof firebase.initializeApp !== 'function') {
     
     await showView(startPage);  //Induláskor ezt mutassa
     await fetchConfig();  //Környezeti változók
-    await renderGoogleButton();  //Google elérés inicializálása
+    await initGoogleLogin();     //Google login init
     console.log('✅ Google OK');
     await fetchUserCount();  //Firebase elérés teszt
     await fetchDbTest();  //Firestore elérés teszt
@@ -161,17 +149,6 @@ async function fetchConfig() {
     console.error('Hiba a konfiguráció betöltése során:', error);
   }
 }
-
-// Google elérés inicializálása
-function renderGoogleButton() {
-  google.accounts.id.initialize({
-    client_id: googleClientId,
-    callback: googleLogin, // A beléptetési callback függvényed
-    //cancel_on_tap_outside: true, // Engedélyezi a prompt kilépését, ha a felhasználó máshová kattint
-    ux_mode: 'popup', // Direkt popup használata
-  });
-}
-
 
 // Firebase elérés teszt (lekérjük hány felhasználó van regisztrálva)
 async function fetchUserCount() {
@@ -277,7 +254,8 @@ async function sendForgotPassword(email) {
 }
 
 
-// Google belépés és regisztráció kezelése
+// Google belépés és regisztráció kezelése – RÉGI BEJELENTKEZÉSI MÓD – TÖRÖLHETŐ
+/*
 async function googleLogin(response) {
   //console.log('Google ID token:', response.credential);
   registerLink.textContent = "Google belépés...";
@@ -310,6 +288,56 @@ async function googleLogin(response) {
     console.error('Hiba a kérés során:', error);
   }
 }
+*/
+
+// ÚJ Google login OAuth 2.0 módszer – popup ablak
+function initGoogleLogin() {
+  google.accounts.id.initialize({
+    client_id: googleClientId,
+    callback: handleCredentialResponse,
+    ux_mode: "popup"
+  });
+  google.accounts.id.renderButton(
+    document.getElementById("google-login-btn"),
+    { theme: "outline", size: "large" }
+  );
+  google.accounts.id.renderButton(
+    document.getElementById("google-register-btn"),
+    { theme: "outline", size: "large" }
+  );
+}
+
+// ÚJ Google login OAuth 2.0 módszer – belépés ezt hívja meg
+// Google belépés code –» megy a szervernek –» onnan jön vissza majd a user adat
+async function handleCredentialResponse(response) {
+  console.log("Google response:", response);
+  if (!response || !response.code) {
+    console.error("Nincs authorization code!");
+    return;
+  }
+  try {
+    const res = await fetch("/api/login-google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: response.code })
+    });
+    const data = await res.json();
+    if (data.success) {
+      console.log("✅ Google login sikeres:", data.user);
+      login_user.uid = data.user.sub; 
+      login_user.name = data.user.name;
+      login_user.loginType = "google";
+      login_user.userId = data.userId; 
+      await welcomeUserAndRedirect();
+    } else {
+      console.error("Google login hiba:", data.message);
+      alert("Google belépés sikertelen!");
+    }
+  } catch (err) {
+    console.error("Google login kérés hiba:", err);
+  }
+}
+
 
 // Welcome message kijelzése, majd átirányítás
 async function welcomeUserAndRedirect() {
